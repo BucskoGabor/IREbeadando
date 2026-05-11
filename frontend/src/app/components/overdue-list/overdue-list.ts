@@ -38,7 +38,7 @@ export class OverdueListComponent implements OnInit {
     this.loanService.returnLoan(loan.id).subscribe({
       next: () => {
         this.toastService.success(`"${loan.item.title}" visszavéve`);
-        this.ngOnInit(); // Refresh list
+        this.ngOnInit();
       },
       error: (err) => {
         this.loading.set(false);

@@ -11,7 +11,6 @@ router.use(authMiddleware);
 const memberRepo = () => AppDataSource.getRepository(Member);
 const loanRepo = () => AppDataSource.getRepository(Loan);
 
-// GET /api/members - List members with optional search
 router.get("/", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { search, showInactive } = req.query;
@@ -46,7 +45,6 @@ router.get("/", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// GET /api/members/:id - Get member details with active loans
 router.get("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const member = await memberRepo().findOne({
@@ -64,7 +62,6 @@ router.get("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
       order: { loanDate: "DESC" },
     });
 
-    // Filter for truly null returnDate (active loans)
     const filteredLoans = activeLoans.filter((l) => l.returnDate === null);
 
     res.json({
@@ -92,7 +89,6 @@ router.get("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// POST /api/members - Create new member
 router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { name, phone, idCardNumber, address } = req.body;
@@ -117,7 +113,6 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// PUT /api/members/:id - Update member
 router.put("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const member = await memberRepo().findOne({
@@ -153,7 +148,6 @@ router.put("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// DELETE /api/members/:id - Soft delete (deactivate)
 router.delete("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const member = await memberRepo().findOne({

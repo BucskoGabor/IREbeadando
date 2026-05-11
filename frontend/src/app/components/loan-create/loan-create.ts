@@ -143,7 +143,7 @@ export class LoanCreateComponent implements OnInit {
       next: () => {
         this.toastService.success(`"${loan.item.title}" visszavéve`);
         this.loadMemberLoans();
-        // Also refresh available items list if we were looking at them
+
         if (this.itemSearch) {
           this.searchItems();
         } else {

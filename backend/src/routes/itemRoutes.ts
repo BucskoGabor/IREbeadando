@@ -11,7 +11,6 @@ router.use(authMiddleware);
 const itemRepo = () => AppDataSource.getRepository(Item);
 const loanRepo = () => AppDataSource.getRepository(Loan);
 
-// GET /api/items - List items with search and filters
 router.get("/", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { search, type, status } = req.query;
@@ -49,7 +48,6 @@ router.get("/", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// GET /api/items/:id - Get item details with current loan info
 router.get("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const item = await itemRepo().findOne({
@@ -95,7 +93,6 @@ router.get("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// POST /api/items - Create new item
 router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { title, author, type, acquisitionDate } = req.body;
@@ -127,7 +124,6 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// PUT /api/items/:id - Update item
 router.put("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const item = await itemRepo().findOne({
@@ -154,7 +150,6 @@ router.put("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// DELETE /api/items/:id - Scrap item (status change)
 router.delete("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const item = await itemRepo().findOne({

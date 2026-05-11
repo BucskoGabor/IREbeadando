@@ -1,18 +1,22 @@
-@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
   --bg-body: #0d1117;
   --bg-card: #161b22;
   --bg-header: #21262d;
-  --border: #30363d; /* Brighter border for better separation */
-  --text-main: #e6edf3; /* Much brighter */
+  --border: #30363d;
+  --text-main: #e6edf3;
   --text-light: #ffffff;
-  --text-gray: #a5adb6; /* Brighter gray */
+  --text-gray: #a5adb6;
   --accent: #58a6ff;
+  --accent-rgb: 88, 166, 255;
   --success: #238636;
+  --success-rgb: 35, 134, 54;
   --danger: #da3633;
+  --danger-rgb: 218, 54, 51;
   --warning: #d29922;
+  --warning-rgb: 210, 153, 34;
+  --info-rgb: 56, 139, 253;
 }
 
 body {
@@ -23,36 +27,41 @@ body {
   padding: 0;
 }
 
-/* THE ULTIMATE WHITE BACKGROUND KILLER */
 * {
   border-color: var(--border) !important;
 }
 
-/* Force Dark Mode on all Bootstrap elements */
-.table, .list-group-item, .card, .modal-content, .dropdown-menu {
+.table,
+.list-group-item,
+.card,
+.modal-content,
+.dropdown-menu {
   background-color: var(--bg-card) !important;
   color: var(--text-main) !important;
   border: 1px solid var(--border) !important;
 }
 
-/* Specific cleanup for white frames */
-.border, .border-top, .border-bottom, .border-start, .border-end {
+.border,
+.border-top,
+.border-bottom,
+.border-start,
+.border-end {
   border-color: var(--border) !important;
 }
 
-.shadow-sm, .shadow, .shadow-lg {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+.shadow-sm,
+.shadow,
+.shadow-lg {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Kill Bootstrap's persistent table cell backgrounds */
-.table > :not(caption) > * > * {
+.table> :not(caption)>*>* {
   background-color: transparent !important;
   color: inherit !important;
   box-shadow: none !important;
   border-bottom: 1px solid var(--border) !important;
 }
 
-/* Kill list group item white backgrounds */
 .list-group-item {
   background-color: transparent !important;
   color: var(--text-main) !important;
@@ -64,15 +73,14 @@ body {
   color: var(--text-light) !important;
 }
 
-/* Force Table Headers */
 .table thead th {
   background-color: var(--bg-header) !important;
   color: var(--text-gray) !important;
   border-bottom: 1px solid var(--border) !important;
 }
 
-/* Neutralize bg-white and bg-light */
-.bg-white, .bg-light {
+.bg-white,
+.bg-light {
   background-color: var(--bg-card) !important;
 }
 
@@ -80,8 +88,9 @@ body {
   color: var(--text-light) !important;
 }
 
-/* Forms */
-.form-control, .form-select, .input-group-text {
+.form-control,
+.form-select,
+.input-group-text {
   background-color: var(--bg-body) !important;
   border: 1px solid var(--border) !important;
   color: var(--text-light) !important;
@@ -93,17 +102,25 @@ body {
   box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3) !important;
 }
 
-/* Buttons */
 .btn-primary {
   background-color: var(--success) !important;
   border-color: var(--border) !important;
+  color: #ffffff !important;
 }
 
-.btn-primary:hover { background-color: #2ea043 !important; }
+.btn-primary:hover {
+  background-color: #2ea043 !important;
+  color: #ffffff !important;
+}
 
 .btn-outline-primary {
-  color: var(--accent) !important;
+  color: #79c0ff !important;
   border-color: var(--border) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(88, 166, 255, 0.1) !important;
+  color: #79c0ff !important;
 }
 
 .btn-outline-primary:hover {
@@ -111,20 +128,37 @@ body {
   color: #fff !important;
 }
 
-/* Badges */
 .badge {
   font-weight: 600 !important;
   padding: 0.4em 0.8em !important;
   border-radius: 2em !important;
 }
 
-.bg-success { background-color: var(--success) !important; color: #fff !important; }
-.bg-danger { background-color: var(--danger) !important; color: #fff !important; }
-.bg-warning { background-color: var(--warning) !important; color: #000 !important; }
-.bg-primary { background-color: var(--accent) !important; color: #fff !important; }
-.bg-info { background-color: #388bfd !important; color: #fff !important; }
+.bg-success {
+  background-color: rgba(var(--success-rgb), var(--bs-bg-opacity, 1)) !important;
+  color: #fff !important;
+}
 
-/* Navbar */
+.bg-danger {
+  background-color: rgba(var(--danger-rgb), var(--bs-bg-opacity, 1)) !important;
+  color: #fff !important;
+}
+
+.bg-warning {
+  background-color: rgba(var(--warning-rgb), var(--bs-bg-opacity, 1)) !important;
+  color: #000 !important;
+}
+
+.bg-primary {
+  background-color: rgba(var(--accent-rgb), var(--bs-bg-opacity, 1)) !important;
+  color: #fff !important;
+}
+
+.bg-info {
+  background-color: rgba(var(--info-rgb), var(--bs-bg-opacity, 1)) !important;
+  color: #fff !important;
+}
+
 .navbar {
   background-color: var(--bg-header) !important;
   border-bottom: 1px solid var(--border) !important;
@@ -156,22 +190,69 @@ body {
   font-weight: 600 !important;
 }
 
-/* Utilities */
-.text-muted, .text-secondary { color: var(--text-gray) !important; font-weight: 500 !important; }
-.fw-bold, h1, h2, h3, h4, h5, h6 { color: var(--text-light) !important; }
+.text-muted,
+.text-secondary {
+  color: var(--text-gray) !important;
+  font-weight: 500 !important;
+}
 
-/* Table cell text force */
-.table td, .table th {
+.fw-bold,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-light) !important;
+}
+
+.table td,
+.table th {
   color: var(--text-main) !important;
 }
 
-a { color: var(--accent) !important; text-decoration: none; }
-a:hover { text-decoration: underline; }
+a:not(.btn) {
+  color: var(--accent) !important;
+  text-decoration: none;
+}
 
-/* Alerts */
+a:not(.btn):hover {
+  text-decoration: underline;
+}
+
 .alert {
   background-color: rgba(187, 128, 9, 0.15) !important;
   border: 1px solid var(--warning) !important;
   color: var(--warning) !important;
   border-radius: 8px;
+}
+
+.bi {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+
+.text-primary {
+  color: #79c0ff !important;
+}
+
+.text-success {
+  color: #7ee787 !important;
+}
+
+.text-danger {
+  color: #ff7b72 !important;
+}
+
+.text-info {
+  color: #a5d6ff !important;
+}
+
+.text-warning {
+  color: #e3b341 !important;
+}
+
+.text-accent {
+  color: #79c0ff !important;
 }

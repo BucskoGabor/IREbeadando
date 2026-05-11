@@ -15,7 +15,6 @@ const itemRepo = () => AppDataSource.getRepository(Item);
 const memberRepo = () => AppDataSource.getRepository(Member);
 const settingRepo = () => AppDataSource.getRepository(Setting);
 
-// POST /api/loans - Create a new loan
 router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { memberId, itemId } = req.body;
@@ -25,7 +24,6 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Check member exists and is active
     const member = await memberRepo().findOne({ where: { id: memberId } });
     if (!member) {
       res.status(404).json({ message: "Tag nem található" });
@@ -36,7 +34,6 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Check item exists and is available
     const item = await itemRepo().findOne({ where: { id: itemId } });
     if (!item) {
       res.status(404).json({ message: "Tétel nem található" });
@@ -47,7 +44,6 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Check max loans limit
     const maxLoansSetting = await settingRepo().findOne({
       where: { key: "max_loans_per_member" },
     });
@@ -64,7 +60,6 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Create loan
     const loan = loanRepo().create({
       memberId,
       itemId,
@@ -72,13 +67,11 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
       returnDate: null,
     });
 
-    // Update item status
     item.status = "borrowed";
     await itemRepo().save(item);
 
     const savedLoan = await loanRepo().save(loan);
 
-    // Reload with relations
     const fullLoan = await loanRepo().findOne({
       where: { id: savedLoan.id },
       relations: ["member", "item"],
@@ -109,7 +102,6 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// PUT /api/loans/:id/return - Return an item
 router.put("/:id/return", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const loan = await loanRepo().findOne({
@@ -127,11 +119,9 @@ router.put("/:id/return", async (req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
-    // Mark as returned
     loan.returnDate = new Date();
     await loanRepo().save(loan);
 
-    // Update item status back to available
     const item = await itemRepo().findOne({ where: { id: loan.itemId } });
     if (item) {
       item.status = "available";
@@ -149,7 +139,6 @@ router.put("/:id/return", async (req: AuthRequest, res: Response): Promise<void>
   }
 });
 
-// GET /api/loans/overdue - Get overdue loans
 router.get("/overdue", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const overdueSetting = await settingRepo().findOne({
@@ -204,7 +193,6 @@ router.get("/overdue", async (req: AuthRequest, res: Response): Promise<void> =>
   }
 });
 
-// GET /api/loans/member/:memberId - Get loans for a member
 router.get("/member/:memberId", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const loans = await loanRepo().find({
@@ -228,7 +216,6 @@ router.get("/member/:memberId", async (req: AuthRequest, res: Response): Promise
   }
 });
 
-// GET /api/loans/item/:itemId - Find loan by item (for return by item serial)
 router.get("/item/:itemId", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const loan = await loanRepo().findOne({

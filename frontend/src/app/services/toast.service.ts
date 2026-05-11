@@ -4,6 +4,7 @@ export interface Toast {
   message: string;
   type: 'success' | 'danger' | 'info' | 'warning';
   id: number;
+  closing?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -16,14 +17,23 @@ export class ToastService {
     const toast: Toast = { message, type, id };
     this.toasts.update(t => [...t, toast]);
 
-    // Auto remove after 5 seconds
     setTimeout(() => {
       this.remove(id);
     }, 5000);
   }
 
   remove(id: number): void {
-    this.toasts.update(t => t.filter(toast => toast.id !== id));
+    const current = this.toasts();
+    const index = current.findIndex(t => t.id === id);
+    if (index === -1 || current[index].closing) return;
+
+    this.toasts.update(t => t.map(toast => 
+      toast.id === id ? { ...toast, closing: true } : toast
+    ));
+
+    setTimeout(() => {
+      this.toasts.update(t => t.filter(toast => toast.id !== id));
+    }, 300);
   }
 
   success(message: string): void { this.show(message, 'success'); }

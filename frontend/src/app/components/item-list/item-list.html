@@ -99,6 +99,11 @@
                       <i class="bi bi-trash"></i>
                     </button>
                   }
+                  @if (item.status === 'scrapped') {
+                    <button class="btn btn-sm btn-outline-success" (click)="restoreItem(item)" title="Visszaállítás">
+                      <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                  }
                 </td>
               </tr>
             }

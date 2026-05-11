@@ -8,7 +8,6 @@ import { AuthRequest, authMiddleware, JWT_SECRET } from "../middleware/auth";
 const router = Router();
 const userRepo = () => AppDataSource.getRepository(User);
 
-// POST /api/auth/login
 router.post("/login", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { username, password } = req.body;
@@ -50,7 +49,6 @@ router.post("/login", async (req: AuthRequest, res: Response): Promise<void> => 
   }
 });
 
-// POST /api/auth/register (only admin can register new users)
 router.post("/register", authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     if (req.user?.role !== "admin") {
@@ -90,7 +88,6 @@ router.post("/register", authMiddleware, async (req: AuthRequest, res: Response)
   }
 });
 
-// GET /api/auth/me
 router.get("/me", authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = await userRepo().findOne({ where: { id: req.user!.id } });

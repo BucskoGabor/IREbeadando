@@ -7,7 +7,6 @@ export async function seed() {
   const userRepo = AppDataSource.getRepository(User);
   const settingRepo = AppDataSource.getRepository(Setting);
 
-  // Seed admin user
   const adminExists = await userRepo.findOne({ where: { username: "admin" } });
   if (!adminExists) {
     const hashedPassword = await bcrypt.hash("admin123", 10);
@@ -20,7 +19,6 @@ export async function seed() {
     console.log("Admin felhasználó létrehozva (admin / admin123)");
   }
 
-  // Seed default settings
   const settings = [
     { key: "max_loans_per_member", value: "6", description: "Maximális kölcsönözhető tételek száma tagonként" },
     { key: "overdue_days", value: "30", description: "Késésnek számító napok száma" },

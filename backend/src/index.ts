@@ -28,13 +28,11 @@ AppDataSource.initialize()
       `);
     });
 
-    // Logger middleware
     app.use((req, res, next) => {
       console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
       next();
     });
 
-    // Routes
     app.use("/api/auth", authRoutes);
     app.use("/api/members", memberRoutes);
     app.use("/api/items", itemRoutes);
@@ -42,7 +40,6 @@ AppDataSource.initialize()
     app.use("/api/settings", settingRoutes);
     app.use("/api/dashboard", dashboardRoutes);
 
-    // Health check
     app.get("/api/health", (_req, res) => {
       res.json({ status: "ok", timestamp: new Date().toISOString() });
     });

@@ -58,7 +58,7 @@ export class MemberListComponent implements OnInit {
       next: () => {
         console.log('DELETE success');
         this.toastService.success('Tag sikeresen inaktiválva');
-        // Small delay to ensure DB persistence is visible in the next fetch
+
         setTimeout(() => this.loadMembers(), 100);
       },
       error: (err) => {

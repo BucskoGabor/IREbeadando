@@ -20,13 +20,13 @@ export class Item {
   author!: string;
 
   @Column({ type: "varchar", length: 50 })
-  type!: string; // 'book' | 'cd' | 'cassette' | 'sheet_music'
+  type!: string;
 
   @Column({ type: "varchar", length: 50 })
   acquisitionDate!: string;
 
   @Column({ type: "varchar", length: 50, default: "available" })
-  status!: string; // 'available' | 'borrowed' | 'scrapped'
+  status!: string;
 
   @OneToMany(() => Loan, (loan) => loan.item)
   loans!: Loan[];

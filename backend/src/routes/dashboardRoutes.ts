@@ -21,7 +21,6 @@ router.get("/stats", async (req: AuthRequest, res: Response): Promise<void> => {
     const totalItems = await itemRepo().count({ where: { status: "available" } });
     const activeLoans = await loanRepo().count({ where: { returnDate: IsNull() } });
 
-    // Calculate overdue count
     const overdueSetting = await settingRepo().findOne({ where: { key: "overdue_days" } });
     const overdueDays = overdueSetting ? parseInt(overdueSetting.value) : 30;
     const overdueDate = new Date();
@@ -34,7 +33,6 @@ router.get("/stats", async (req: AuthRequest, res: Response): Promise<void> => {
       },
     });
 
-    // Get recent loans
     const recentLoans = await loanRepo().find({
       relations: ["member", "item"],
       order: { loanDate: "DESC" },

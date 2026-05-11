@@ -82,4 +82,21 @@ export class ItemDetailComponent implements OnInit {
       });
     }
   }
+
+  restoreItem(): void {
+    const currentItem = this.item();
+    if (currentItem) {
+      this.loading.set(true);
+      this.itemService.updateItem(currentItem.id, { status: 'available' }).subscribe({
+        next: () => {
+          this.loadData();
+          this.toastService.success('Tétel sikeresen visszaállítva');
+        },
+        error: (err) => {
+          this.loading.set(false);
+          this.toastService.error(err.error?.message || 'Hiba történt');
+        }
+      });
+    }
+  }
 }

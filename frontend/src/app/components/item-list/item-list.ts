@@ -99,6 +99,20 @@ export class ItemListComponent implements OnInit {
     });
   }
 
+  restoreItem(item: Item): void {
+    this.loading.set(true);
+    this.itemService.updateItem(item.id, { status: 'available' }).subscribe({
+      next: () => {
+        this.loadItems();
+        this.toastService.success(`"${item.title}" sikeresen visszaállítva`);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.toastService.error(err.error?.message || 'Hiba történt a visszaállítás során');
+      }
+    });
+  }
+
   getStatusClass(status: string): string {
     switch (status) {
       case 'available': return 'bg-success';

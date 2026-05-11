@@ -38,7 +38,7 @@ export class MemberDetailComponent implements OnInit {
     this.memberService.getMember(id).subscribe({
       next: (m) => {
         this.member.set(m);
-        // The member detail API already returns activeLoans, but we want full history here
+
         this.loadLoans(id);
       },
       error: () => {
