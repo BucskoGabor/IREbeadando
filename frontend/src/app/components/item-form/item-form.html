@@ -1,0 +1,51 @@
+<div class="container-fluid px-5 py-4">
+  <h2 class="page-title mb-4">
+    <i class="bi bi-collection me-2"></i>{{ isEdit() ? 'Tétel szerkesztése' : 'Új tétel felvétele' }}
+  </h2>
+  <div class="card form-card">
+    <div class="card-body p-4">
+      @if (error()) {
+        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}</div>
+      }
+      <form (ngSubmit)="onSubmit()" #itemForm="ngForm">
+        <div class="row">
+          <div class="col-md-8 mb-3">
+            <label class="form-label">Cím *</label>
+            <input type="text" class="form-control" [ngModel]="title()" (ngModelChange)="title.set($event)" name="title" required #titleInput="ngModel" [class.is-invalid]="titleInput.invalid && titleInput.touched" />
+            <div class="invalid-feedback">Cím megadása kötelező</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Típus *</label>
+            <select class="form-select" [ngModel]="type()" (ngModelChange)="type.set($event)" name="type" required>
+              <option value="book">Könyv</option>
+              <option value="cd">CD</option>
+              <option value="cassette">Kazetta</option>
+              <option value="sheet_music">Kotta</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 mb-3">
+            <label class="form-label">Szerző *</label>
+            <input type="text" class="form-control" [ngModel]="author()" (ngModelChange)="author.set($event)" name="author" required #authorInput="ngModel" [class.is-invalid]="authorInput.invalid && authorInput.touched" />
+            <div class="invalid-feedback">Szerző megadása kötelező</div>
+          </div>
+          <div class="col-md-5 mb-3">
+            <label class="form-label">Beszerzés dátuma *</label>
+            <input type="date" class="form-control" [ngModel]="acquisitionDate()" (ngModelChange)="acquisitionDate.set($event)" name="acquisitionDate" required #dateInput="ngModel" [class.is-invalid]="dateInput.invalid && dateInput.touched" />
+            <div class="invalid-feedback">Dátum megadása kötelező</div>
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="loading() || itemForm.invalid">
+            @if (loading()) {
+              <span class="spinner-border spinner-border-sm me-1"></span>
+            }
+            <i class="bi bi-check-lg me-1"></i>{{ isEdit() ? 'Mentés' : 'Felvétel' }}
+          </button>
+          <a routerLink="/items" class="btn btn-outline-secondary">Mégse</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

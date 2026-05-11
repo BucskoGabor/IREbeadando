@@ -1,0 +1,133 @@
+<div class="container-fluid px-5 py-4">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2 text-muted">Adatok betöltése...</p>
+    </div>
+  } @else if (!item()) {
+    <div class="alert alert-warning shadow-sm border-0">
+      <i class="bi bi-exclamation-triangle me-2"></i>Tétel nem található
+    </div>
+  } @else {
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="page-title"><i class="bi bi-journal-text me-2"></i>{{ item()!.title }}</h2>
+      <div class="d-flex gap-2">
+        <a [routerLink]="['/items', item()!.id, 'edit']" class="btn btn-warning shadow-sm">
+          <i class="bi bi-pencil me-1"></i>Szerkesztés
+        </a>
+        <a routerLink="/items" class="btn btn-outline-secondary shadow-sm">Vissza</a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Item basic info -->
+      <div class="col-lg-6">
+        <div class="card data-card h-100 shadow-sm">
+          <div class="card-header bg-transparent py-3">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-primary"></i>Tétel adatai</h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="row mb-3">
+              <div class="col-4 text-muted small text-uppercase fw-bold">Sorszám:</div>
+              <div class="col-8"><span class="badge bg-primary px-3 py-2 fs-6">{{ item()!.id }}</span></div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-4 text-secondary small text-uppercase fw-bold">Cím:</div>
+              <div class="col-8 fw-bold fs-5">{{ item()!.title }}</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-4 text-secondary small text-uppercase fw-bold">Szerző:</div>
+              <div class="col-8 text-secondary">{{ item()!.author }}</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-4 text-secondary small text-uppercase fw-bold">Típus:</div>
+              <div class="col-8">
+                <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-25 px-3 py-2">
+                  {{ typeLabels[item()!.type] || item()!.type }}
+                </span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-4 text-secondary small text-uppercase fw-bold">Beszerzés:</div>
+              <div class="col-8 text-secondary">{{ item()!.acquisitionDate | date:'yyyy.MM.dd.' }}</div>
+            </div>
+            <div class="row">
+              <div class="col-4 text-secondary small text-uppercase fw-bold">Státusz:</div>
+              <div class="col-8">
+                <span class="badge px-3 py-2" [ngClass]="{
+                  'bg-success': item()!.status === 'available',
+                  'bg-warning': item()!.status === 'borrowed',
+                  'bg-danger': item()!.status === 'scrapped'
+                }">
+                  {{ statusLabels[item()!.status] || item()!.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contextual info (Loan info or Action) -->
+      <div class="col-lg-6">
+        @if (item()!.status === 'borrowed' && item()!.currentLoan) {
+          <div class="card data-card h-100 border-warning border-opacity-50 shadow-sm">
+            <div class="card-header bg-warning bg-opacity-10 py-3">
+              <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-warning"></i>Kikölcsönzés adatai</h5>
+            </div>
+            <div class="card-body p-4 d-flex flex-column">
+              <div class="mb-4">
+                <p class="text-secondary small text-uppercase fw-bold mb-1">Kölcsönző:</p>
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-person-circle fs-2 text-primary me-3"></i>
+                  <div>
+                    <a [routerLink]="['/members', item()!.currentLoan!.member.id]" class="fw-bold fs-5 text-decoration-none">
+                      {{ item()!.currentLoan!.member.name }}
+                    </a>
+                    <div class="text-secondary small">ID: {{ item()!.currentLoan!.member.id }} | {{ item()!.currentLoan!.member.idCardNumber }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <p class="text-secondary small text-uppercase fw-bold mb-1">Kölcsönzés dátuma:</p>
+                <div class="fs-5"><i class="bi bi-calendar-event me-2 text-secondary"></i>{{ item()!.currentLoan!.loanDate | date:'yyyy.MM.dd. HH:mm' }}</div>
+              </div>
+              <div class="mt-auto">
+                <button class="btn btn-success btn-lg w-100 shadow-sm" (click)="returnItem()">
+                  <i class="bi bi-arrow-left-circle me-2"></i>Visszavétel
+                </button>
+              </div>
+            </div>
+          </div>
+        } @else if (item()!.status === 'available') {
+          <div class="card data-card h-100 shadow-sm border-success border-opacity-25">
+            <div class="card-body text-center py-5 d-flex flex-column justify-content-center align-items-center">
+              <div class="bg-success bg-opacity-10 rounded-circle p-4 mb-4">
+                <i class="bi bi-check2-circle display-1 text-success"></i>
+              </div>
+              <h4 class="fw-bold text-success">Szabadon elérhető</h4>
+              <p class="text-secondary mb-4">A tétel jelenleg bárki számára kikölcsönözhető.</p>
+              <div class="d-flex gap-2 w-100">
+                <a routerLink="/loans/new" class="btn btn-primary btn-lg flex-grow-1 shadow-sm">
+                  <i class="bi bi-plus-lg me-2"></i>Kölcsönzés indítása
+                </a>
+                <button class="btn btn-outline-danger btn-lg shadow-sm" (click)="scrapItem()">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="card data-card h-100 shadow-sm border-danger border-opacity-25">
+            <div class="card-body text-center py-5 d-flex flex-column justify-content-center align-items-center">
+              <div class="bg-danger bg-opacity-10 rounded-circle p-4 mb-4">
+                <i class="bi bi-trash display-1 text-danger"></i>
+              </div>
+              <h4 class="fw-bold text-danger">Selejtezett tétel</h4>
+              <p class="text-secondary">Ez a tétel ki lett vezetve a nyilvántartásból, nem kölcsönözhető.</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

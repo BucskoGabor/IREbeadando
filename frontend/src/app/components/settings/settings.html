@@ -1,0 +1,50 @@
+<div class="container-fluid px-4 py-4">
+  <h2 class="page-title mb-5"><i class="bi bi-gear-fill me-3"></i>Rendszerbeállítások</h2>
+
+  @if (loading() && settings().length === 0) {
+    <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+  } @else {
+    <div class="row row-cols-1 row-cols-xl-2 g-4">
+      @for (setting of settings(); track setting.key) {
+        <div class="col">
+          <div class="card data-card shadow-sm h-100">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                  @if (setting.key === 'max_loans_per_member') {
+                    <i class="bi bi-person-check text-primary fs-3 mb-0"></i>
+                  } @else if (setting.key === 'overdue_days') {
+                    <i class="bi bi-calendar-x text-primary fs-3 mb-0"></i>
+                  } @else {
+                    <i class="bi bi-gear text-primary fs-3 mb-0"></i>
+                  }
+                </div>
+                <div>
+                  <h5 class="mb-1">{{ settingLabels[setting.key] || setting.key }}</h5>
+                  <div class="text-muted small">{{ setting.description || 'Rendszer szintű konfigurációs beállítás.' }}</div>
+                </div>
+              </div>
+              
+              <div class="row g-3 align-items-center mt-auto">
+                <div class="col-sm-6">
+                  <div class="input-group input-group-lg">
+                    <input type="number" class="form-control text-center" [(ngModel)]="setting.value" min="1" />
+                    <span class="input-group-text bg-transparent border-start-0">{{ setting.key === 'overdue_days' ? 'nap' : 'db' }}</span>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <button class="btn btn-primary btn-lg w-100" (click)="saveSetting(setting)" [disabled]="loading()">
+                    @if (loading()) {
+                      <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    Mentés
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

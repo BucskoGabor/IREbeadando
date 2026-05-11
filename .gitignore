@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+backend/dist/
+
+# Angular
+frontend/.angular/
+frontend/.vscode/
+
+# Database
+*.sqlite
+
+# Environment
+.env
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

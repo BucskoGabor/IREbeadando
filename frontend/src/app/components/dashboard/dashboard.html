@@ -1,0 +1,126 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Irányítópult</h1>
+    <div class="text-secondary small">
+      Legutóbbi frissítés: {{ stats() ? (stats()?.recentActivity?.[0]?.loanDate | date:'HH:mm:ss') : '-' }}
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else if (stats()) {
+    <div class="row g-4 mb-5">
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+              <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                <i class="bi bi-people text-primary h4 mb-0"></i>
+              </div>
+              <div class="text-secondary small">Összes aktív tag</div>
+            </div>
+            <div class="h2 mb-0">{{ stats()?.totalMembers }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+              <div class="bg-success bg-opacity-10 p-2 rounded me-3">
+                <i class="bi bi-book text-success h4 mb-0"></i>
+              </div>
+              <div class="text-secondary small">Elérhető tételek</div>
+            </div>
+            <div class="h2 mb-0">{{ stats()?.totalItemsAvailable }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+              <div class="bg-info bg-opacity-10 p-2 rounded me-3">
+                <i class="bi bi-journal-check text-info h4 mb-0"></i>
+              </div>
+              <div class="text-secondary small">Aktív kölcsönzések</div>
+            </div>
+            <div class="h2 mb-0">{{ stats()?.activeLoans }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+              <div class="bg-danger bg-opacity-10 p-2 rounded me-3">
+                <i class="bi bi-exclamation-triangle text-danger h4 mb-0"></i>
+              </div>
+              <div class="text-secondary small">Késedelmes tételek</div>
+            </div>
+            <div class="h2 mb-0 text-danger">{{ stats()?.overdueLoans }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Legutóbbi aktivitás</h5>
+            <a routerLink="/overdue" class="btn btn-sm btn-link text-accent">Összes megtekintése</a>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0 align-middle">
+                <thead>
+                  <tr>
+                    <th class="ps-4">Tétel</th>
+                    <th>Tag</th>
+                    <th>Dátum</th>
+                    <th class="pe-4 text-end">Státusz</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (act of stats()?.recentActivity; track act.id) {
+                    <tr>
+                      <td class="ps-4 fw-medium">{{ act.itemTitle }}</td>
+                      <td>{{ act.memberName }}</td>
+                      <td>{{ act.loanDate | date:'yyyy.MM.dd.' }}</td>
+                      <td class="pe-4 text-end">
+                        <span class="badge" [ngClass]="act.returned ? 'bg-secondary' : 'bg-success'">
+                          {{ act.returned ? 'Visszavéve' : 'Kikölcsönözve' }}
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h5 class="mb-4">Gyorsműveletek</h5>
+            <div class="d-grid gap-2">
+              <a routerLink="/loans/new" class="btn btn-primary py-2">
+                <i class="bi bi-plus-circle me-2"></i>Új kölcsönzés
+              </a>
+              <a routerLink="/members/new" class="btn btn-outline-primary py-2">
+                <i class="bi bi-person-plus me-2"></i>Új tag regisztrációja
+              </a>
+              <a routerLink="/items/new" class="btn btn-outline-primary py-2">
+                <i class="bi bi-journal-plus me-2"></i>Új tétel felvétele
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,63 @@
+<div class="container-fluid px-5 py-4">
+  <h2 class="page-title mb-4"><i class="bi bi-clock-history me-2"></i>Késések</h2>
+
+  @if (loading()) {
+    <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+  } @else if (overdueLoans().length === 0) {
+    <div class="text-center py-5">
+      <i class="bi bi-emoji-smile display-1 text-success"></i>
+      <p class="mt-3 text-muted fs-5">Nincs lejárt kölcsönzés!</p>
+    </div>
+  } @else {
+    <div class="alert alert-warning mb-4">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      <strong>{{ overdueLoans().length }}</strong> lejárt kölcsönzés található
+      (határidő: {{ overdueLoans()[0]?.overdueDaysConfig || 30 }} nap)
+    </div>
+
+    <div class="card data-card">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Tétel</th>
+              <th>Típus</th>
+              <th>Kölcsönző</th>
+              <th>Telefon</th>
+              <th>Kölcsönzés dátuma</th>
+              <th>Eltelt napok</th>
+              <th>Késés</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (loan of overdueLoans(); track loan.id) {
+              <tr>
+                <td>
+                  <a [routerLink]="['/items', loan.item.id]" class="fw-semibold text-decoration-none">
+                    {{ loan.item.title }}
+                  </a>
+                </td>
+                <td><span class="badge bg-info">{{ loan.item.type }}</span></td>
+                <td>
+                  <a [routerLink]="['/members', loan.member.id]" class="text-decoration-none">
+                    {{ loan.member.name }}
+                  </a>
+                </td>
+                <td>{{ loan.member.phone }}</td>
+                <td>{{ loan.loanDate | date:'yyyy.MM.dd.' }}</td>
+                <td><span class="badge bg-secondary">{{ loan.totalDays }} nap</span></td>
+                <td><span class="badge bg-danger">{{ loan.delayDays }} nap késés</span></td>
+                <td>
+                  <button class="btn btn-sm btn-success" (click)="returnLoan(loan)">
+                    <i class="bi bi-check-lg me-1"></i>Visszavétel
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

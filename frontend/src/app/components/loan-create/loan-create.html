@@ -1,0 +1,154 @@
+<div class="container-fluid px-5 py-4">
+  <h2 class="page-title mb-4"><i class="bi bi-arrow-left-right me-2"></i>Kölcsönzés</h2>
+
+  <div class="row g-4 align-items-stretch">
+    <!-- LEFT SIDE: MEMBERS & INSTRUCTIONS -->
+    <div class="col-lg-5 d-flex flex-column gap-4">
+      <!-- Member Selection Card -->
+      <div class="card data-card shadow-sm border-0 flex-grow-1">
+        <div class="card-header bg-transparent py-3">
+          <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-person me-2"></i>1. Tag kiválasztása</h5>
+        </div>
+        <div class="card-body d-flex flex-column">
+          @if (!selectedMember()) {
+            <div class="input-group mb-3 shadow-sm rounded">
+              <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control border-start-0" [(ngModel)]="memberSearch"
+                     placeholder="Név vagy azonosító..." (input)="onMemberSearch()" />
+              <button class="btn btn-outline-primary px-3" (click)="searchMembers()" [disabled]="memberLoading()">
+                @if (memberLoading()) {
+                  <span class="spinner-border spinner-border-sm"></span>
+                } @else {
+                  <i class="bi bi-search"></i>
+                }
+              </button>
+            </div>
+
+            <div class="member-list-scroll border rounded flex-grow-1" style="max-height: 450px; overflow-y: auto;">
+              @if (members().length > 0) {
+                <div class="list-group list-group-flush">
+                  @for (m of members(); track m.id) {
+                    <button class="list-group-item list-group-item-action py-3 border-bottom" (click)="selectMember(m)">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <div class="fw-bold">{{ m.name }}</div>
+                          <small class="text-muted">{{ m.idCardNumber }}</small>
+                        </div>
+                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">ID: {{ m.id }}</span>
+                      </div>
+                    </button>
+                  }
+                </div>
+              } @else if (!memberLoading()) {
+                <div class="text-center text-muted py-5 small">
+                  <i class="bi bi-people mb-2 d-block fs-2 opacity-25"></i>
+                  Keressen a tagok között vagy válasszon a listából.
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="selected-member-card p-4 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                  <h4 class="mb-1 text-primary fw-bold">{{ selectedMember()!.name }}</h4>
+                  <div class="text-secondary small mb-1"><i class="bi bi-card-text me-2"></i>{{ selectedMember()!.idCardNumber }}</div>
+                  <div class="text-secondary small"><i class="bi bi-telephone me-2"></i>{{ selectedMember()!.phone }}</div>
+                </div>
+                <button class="btn btn-sm btn-outline-danger px-3" (click)="selectedMember.set(null)">Csere</button>
+              </div>
+
+              <div class="mt-2">
+                <h6 class="small fw-bold text-uppercase text-secondary border-bottom border-secondary border-opacity-25 pb-2 mb-3">Aktív kölcsönzések ({{ memberLoans().length }})</h6>
+                @if (memberLoans().length === 0) {
+                  <div class="text-center py-4 text-secondary small">Nincs aktív kölcsönzése.</div>
+                } @else {
+                  <div class="active-loans-list border border-secondary border-opacity-10 rounded" style="max-height: 300px; overflow-y: auto;">
+                    @for (loan of memberLoans(); track loan.id) {
+                      <div class="d-flex justify-content-between align-items-center p-3 border-bottom border-light">
+                        <div class="flex-grow-1 pe-2">
+                          <div class="small fw-semibold text-truncate" style="max-width: 250px;">{{ loan.item.title }}</div>
+                          <div class="text-muted" style="font-size: 0.7rem;">Kölcsönözve: {{ loan.loanDate | date:'yyyy.MM.dd.' }}</div>
+                        </div>
+                        <button class="btn btn-sm btn-link text-success p-0" (click)="returnLoan(loan)" title="Visszavétel">
+                          <i class="bi bi-arrow-left-circle-fill fs-4"></i>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      
+      <!-- Instructions/Tip Card -->
+      <div class="card bg-info bg-opacity-10 border-0 shadow-sm">
+        <div class="card-body py-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-info-circle-fill me-3 fs-4 text-info"></i>
+            <div class="small">
+              <strong>Folyamat:</strong> Először válasszon egy <strong>tagot</strong> itt balra, majd kattintson a kölcsönzésre a jobb oldali könyveknél.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE: BOOKS -->
+    <div class="col-lg-7">
+      <div class="card data-card h-100 shadow-sm border-0 d-flex flex-column">
+        <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-book me-2"></i>2. Könyv kiválasztása</h5>
+          <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3">{{ items().length }} elérhető</span>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <div class="input-group mb-3 shadow-sm rounded">
+            <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control border-start-0" [(ngModel)]="itemSearch"
+                   placeholder="Cím vagy szerző keresése..." (input)="onItemSearch()" />
+            <button class="btn btn-primary px-4" (click)="searchItems()" [disabled]="itemLoading()">
+              @if (itemLoading()) {
+                <span class="spinner-border spinner-border-sm"></span>
+              } @else {
+                Keresés
+              }
+            </button>
+          </div>
+
+          <div class="item-list-scroll border rounded flex-grow-1" style="overflow-y: auto;">
+            @if (itemLoading() && items().length === 0) {
+              <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+            } @else if (items().length === 0) {
+              <div class="text-center py-5 text-muted">
+                <i class="bi bi-inbox display-4 d-block mb-2 opacity-25"></i>
+                Nincs elérhető tétel a listában.
+              </div>
+            } @else {
+              <div class="list-group list-group-flush">
+                @for (item of items(); track item.id) {
+                  <div class="list-group-item list-group-item-action p-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="pe-3">
+                        <h6 class="mb-1 fw-bold">{{ item.title }}</h6>
+                        <div class="d-flex align-items-center gap-2">
+                          <small class="text-secondary">{{ item.author }}</small>
+                          <span class="badge bg-secondary-subtle text-secondary border-0 py-1" style="font-size: 0.7rem;">{{ typeLabels[item.type] }}</span>
+                        </div>
+                      </div>
+                      <button class="btn btn-primary rounded-pill px-4 shadow-sm" 
+                              (click)="borrowItem(item)" 
+                              [disabled]="loading() || !selectedMember()">
+                        Kölcsönzés
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

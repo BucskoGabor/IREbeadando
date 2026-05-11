@@ -1,0 +1,43 @@
+<div class="container-fluid px-5 py-4">
+  <h2 class="page-title mb-4">
+    <i class="bi bi-person-plus me-2"></i>{{ isEdit() ? 'Tag szerkesztése' : 'Új tag felvétele' }}
+  </h2>
+
+  <div class="card form-card">
+    <div class="card-body p-4">
+      <form (ngSubmit)="onSubmit()" #memberForm="ngForm">
+        <div class="mb-3">
+          <label class="form-label">Név *</label>
+          <input type="text" class="form-control" [ngModel]="name()" (ngModelChange)="name.set($event)" name="name" required #nameInput="ngModel" [class.is-invalid]="nameInput.invalid && nameInput.touched" />
+          <div class="invalid-feedback">Név megadása kötelező</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Személyigazolvány szám *</label>
+            <input type="text" class="form-control" [ngModel]="idCardNumber()" (ngModelChange)="idCardNumber.set($event)" name="idCardNumber" required #idInput="ngModel" [class.is-invalid]="idInput.invalid && idInput.touched" />
+            <div class="invalid-feedback">Személyigazolvány szám megadása kötelező</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Telefonszám *</label>
+            <input type="text" class="form-control" [ngModel]="phone()" (ngModelChange)="phone.set($event)" name="phone" required placeholder="+36..." #phoneInput="ngModel" [class.is-invalid]="phoneInput.invalid && phoneInput.touched" />
+            <div class="invalid-feedback">Telefonszám megadása kötelező</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Lakcím *</label>
+          <textarea class="form-control" [ngModel]="address()" (ngModelChange)="address.set($event)" name="address" rows="2" required #addressInput="ngModel" [class.is-invalid]="addressInput.invalid && addressInput.touched"></textarea>
+          <div class="invalid-feedback">Lakcím megadása kötelező</div>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary" [disabled]="loading() || memberForm.invalid">
+            @if (loading()) {
+              <span class="spinner-border spinner-border-sm me-1"></span>
+            }
+            <i class="bi bi-check-lg me-1"></i>{{ isEdit() ? 'Mentés' : 'Felvétel' }}
+          </button>
+          <a routerLink="/members" class="btn btn-outline-secondary">Mégse</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
