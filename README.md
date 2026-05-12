@@ -28,7 +28,7 @@ npm run dev
 ```bash
 cd frontend
 npm install
-ng serve
+ng run start
 ```
 
 - URL: [http://localhost:4200](http://localhost:4200)
